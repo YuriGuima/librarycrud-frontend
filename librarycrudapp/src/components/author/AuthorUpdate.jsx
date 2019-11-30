@@ -1,13 +1,9 @@
 import React, { Component } from "react";
 import {
-  getList,
-  addItem,
-  showItem,
-  updateItem,
-  deleteItem
+  updateItem
 } from "../../AuthorFunctions";
 
-class List extends Component {
+class AuthorUpdate extends Component {
   constructor() {
     super();
     this.state = {
@@ -34,41 +30,6 @@ class List extends Component {
     });
   };
 
-  getAll = () => {
-    getList().then(data => {
-      this.setState(
-        {
-          nome: "",
-          dtnascimento: "",
-          sexo: "",
-          nacionalidade: "",
-          items: [...data]
-        },
-        () => {
-          console.log(this.state.items);
-        }
-      );
-    });
-  };
-
-  onSubmit = e => {
-    e.preventDefault();
-    addItem(
-      this.state.nome,
-      this.state.dtnascimento,
-      this.state.sexo,
-      this.state.nacionalidade
-    ).then(() => {
-      this.getAll();
-    });
-    this.setState({
-      nome: "",
-      dtnascimento: "",
-      sexo: "",
-      nacionalidade: ""
-    });
-  };
-
   onUpdate = e => {
     e.preventDefault();
     updateItem(
@@ -83,12 +44,6 @@ class List extends Component {
     this.setState({
       editDisabled: ""
     });
-    this.getAll();
-  };
-
-  onShow = (itemid, e) => {
-    e.preventDefault();
-    showItem(itemid);
     this.getAll();
   };
 
@@ -108,12 +63,6 @@ class List extends Component {
         });
       }
     });
-  };
-
-  onDelete = (val, e) => {
-    e.preventDefault();
-    deleteItem(val);
-    this.getAll();
   };
 
   render() {
@@ -243,4 +192,4 @@ class List extends Component {
   }
 }
 
-export default List;
+export default AuthorUpdate;
