@@ -6,45 +6,42 @@ import { BrowserRouter as Router, Switch, Route, Link } from "react-router-dom";
 function App() {
   return (
     <Router>
-      <div className="pos-f-t">
-        <nav className="navbar navbar-dark bg-dark">
-          <ul className="nav">
-            <li className="nav-item">
-              <Link className="nav-link text-light" to="/">
-                Home
-              </Link>
-            </li>
-            <li className="nav-item">
-              <Link className="nav-link text-light" to={"/author"}>
-                Autores
-              </Link>
-            </li>
-            <li className="nav-item">
-              <Link className="nav-link text-light" to={"/author"}>
-                Editoras
-              </Link>
-            </li>
-            <li className="nav-item">
-              <Link className="nav-link text-light" to={"/author"}>
-                Gêneros
-              </Link>
-            </li>
-            <li className="nav-item">
-              <Link className="nav-link text-light" to={"/author"}>
-                Livros
-              </Link>
-            </li>
-            <li className="nav-item">
-              <Link className="nav-link text-light" to={"/author"}>
-                Sign Up
-              </Link>
-            </li>
-            <li className="nav-item text-right">
-              <Link className="nav-link text-light" to={"/author"}>
-                Login
-              </Link>
-            </li>
-          </ul>
+      <div className="pos-f-t h-10">
+        <div className="jumbotron text-center m-0 pt-3 pb-1">
+          <h3>Teste Técnico</h3>
+          <p>Sistema para estoque de Biblioteca.</p>
+        </div>
+        <nav className="navbar navbar-dark bg-dark p-0">
+          <div className="nav">
+            <Link className="nav-link btn-dark" to="/">
+              Home
+            </Link>
+
+            <Link className="nav-link btn-dark" to={"/author"}>
+              Autores
+            </Link>
+
+            <Link className="nav-link btn-dark" to={"/author"}>
+              Editoras
+            </Link>
+
+            <Link className="nav-link btn-dark" to={"/author"}>
+              Gêneros
+            </Link>
+
+            <Link className="nav-link btn-dark" to={"/author"}>
+              Livros
+            </Link>
+          </div>
+
+          <div className="nav">
+            <Link className="nav-link btn-dark" to={"/author"}>
+              Sign Up
+            </Link>
+            <Link className="nav-link btn-dark" to={"/author"}>
+              Login
+            </Link>
+          </div>
         </nav>
       </div>
 
@@ -66,6 +63,17 @@ function App() {
           </Route>
         </Switch>
       </div>
+      <br></br>
+      <br></br>
+      <footer className="jumbotron bg-dark rounded-0 mb-0 pt-5 pb-3 pl-3 navbar-fixed-bottom">
+        <a
+          href="https://github.com/YuriGuima?tab=repositories"
+          className="text-light text-decoration-none"
+        >
+          {" "}
+          GitHub - Librarycrud
+        </a>
+      </footer>
     </Router>
   );
 }

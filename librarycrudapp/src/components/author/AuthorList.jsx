@@ -1,8 +1,8 @@
 import React, { Component } from "react";
+import { ToastsContainer, ToastsStore } from "react-toasts";
 import {
   getList,
   addItem,
-  showItem,
   updateItem,
   deleteItem
 } from "../../AuthorFunctions";
@@ -12,6 +12,7 @@ class List extends Component {
     super();
     this.state = {
       id: "",
+      idRegister: true, 
       nome: "",
       dtnascimento: "",
       sexo: "",
@@ -23,7 +24,6 @@ class List extends Component {
     this.onSubmit = this.onSubmit.bind(this);
     this.onChange = this.onChange.bind(this);
   }
-
   componentDidMount() {
     this.getAll();
   }
@@ -51,8 +51,17 @@ class List extends Component {
     });
   };
 
+  successAlert = msg => {
+    ToastsStore.success(msg);
+  };
+
+  errorAlert = msg => {
+    ToastsStore.error(msg);
+  };
+
   onSubmit = e => {
     e.preventDefault();
+    
     addItem(
       this.state.nome,
       this.state.dtnascimento,
@@ -60,6 +69,7 @@ class List extends Component {
       this.state.nacionalidade
     ).then(() => {
       this.getAll();
+      this.successAlert("Autor cadastrado com sucesso!");
     });
     this.setState({
       nome: "",
@@ -78,6 +88,7 @@ class List extends Component {
       this.state.nacionalidade,
       this.state.id
     ).then(() => {
+      this.successAlert("Dados alterados com sucesso!");
       this.onToogleClose();
       this.getAll();
       this.setState({
@@ -87,10 +98,14 @@ class List extends Component {
     this.getAll();
   };
 
-  onShow = (itemid, e) => {
+  onShow = (item, e) => {
     e.preventDefault();
-    showItem(itemid);
-    this.getAll();
+    this.setState({
+      nome: item.nome,
+      dtnascimento: item.dtnascimento,
+      sexo: item.sexo,
+      nacionalidade: item.nacionalidade
+    });
   };
 
   onEdit = (itemid, e) => {
@@ -144,7 +159,7 @@ class List extends Component {
       nacionalidade: "",
       editDisabled: false
     });
-  }
+  };
 
   onToogleOpen() {
     // eslint-disable-next-line no-undef
@@ -159,8 +174,41 @@ class List extends Component {
   render() {
     return (
       <div className=".container-fluid">
+        
+        <div className="container">
+          <div className="modal fade" id="myModal" role="dialog">
+            <div className="modal-dialog">
+              <div className="modal-content">
+                <div className="modal-header">
+                  <h4>{this.state.nome}</h4>
+                  <button type="button" className="close" data-dismiss="modal">
+                    &times;
+                  </button>
+                </div>
+                <div className="modal-body">
+                  <ul>
+                    <li>Data de nascimento: { this.state.dtnascimento }</li>
+                    <li>Sexo: { this.state.sexo }</li>
+                    <li>Nacionalidade: { this.state.nacionalidade }</li>
+                  </ul>
+                </div>
+                <div className="modal-footer">
+                  <button
+                    type="button"
+                    className="btn btn-default"
+                    data-dismiss="modal"
+                  >
+                    Close
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        
+        <ToastsContainer store={ToastsStore} />
         <div className="collapse container" id="navbarToggleExternalContent">
-          <form onSubmit={this.onSubmit}>
+          <form onSubmit={!this.state.editDisabled ? (this.onSubmit):(this.onUpdate)} className="needs-validation">
             <br></br>
             <br></br>
             <div className="form-group">
@@ -175,6 +223,7 @@ class List extends Component {
                       name="nome"
                       value={this.state.nome || ""}
                       onChange={this.onChange.bind(this)}
+                      required
                     />
                   </div>
                 </div>
@@ -188,6 +237,7 @@ class List extends Component {
                     name="dtnascimento"
                     value={this.state.dtnascimento || ""}
                     onChange={this.onChange.bind(this)}
+                    required
                   />
                 </div>
               </div>
@@ -203,6 +253,7 @@ class List extends Component {
                     name="sexo"
                     value={this.state.sexo || ""}
                     onChange={this.onChange.bind(this)}
+                    required
                   />
                 </div>
 
@@ -216,6 +267,7 @@ class List extends Component {
                       name="nacionalidade"
                       value={this.state.nacionalidade || ""}
                       onChange={this.onChange.bind(this)}
+                      required
                     />
                   </div>
                 </div>
@@ -227,92 +279,105 @@ class List extends Component {
               <button
                 type="submit"
                 className="btn btn-success btn-block"
-                onClick={this.onSubmit.bind(this)}
               >
-                Submit
+                Cadastrar
               </button>
             ) : (
-              ""
-            )}
-            {this.state.editDisabled ? (
               <button
                 type="submit"
-                onClick={this.onUpdate.bind(this)}
                 className="btn btn-primary btn-block"
               >
                 Update
               </button>
-            ) : (
-              ""
             )}
+            
           </form>
           <br></br>
           <br></br>
         </div>
-        <nav className="navbar navbar-dark bg-dark">
-          <button type="button" className="nav-item btn btn-outline-success" onClick={this.onNew.bind()}>
-            Novo
-          </button>
-          <button
-            className="navbar-toggler"
-            type="button"
-            data-toggle="collapse"
-            data-target="#navbarToggleExternalContent"
-            aria-controls="navbarToggleExternalContent"
-            aria-expanded="false"
-            aria-label="Toggle navigation"
-            onClick={this.onCancelEdit.bind(this)}
-          >
-            <span className="navbar-toggler-icon small"></span>
-          </button>
+        <nav className="navbar navbar-dark jumbotron p-0">
+          {this.state.editDisabled ? (
+            <button
+              className="btn btn-primary rounded-0 pl-3 pr-3"
+              type="button"
+              data-toggle="collapse"
+              data-target="#navbarToggleExternalContent"
+              aria-controls="navbarToggleExternalContent"
+              aria-expanded="false"
+              aria-label="Toggle navigation"
+              onClick={this.onCancelEdit.bind(this)}
+            >
+              Cancelar
+            </button>
+          ) : (
+            <button
+              type="button"
+              data-toggle="collapse"
+              data-target="#navbarToggleExternalContent"
+              aria-controls="navbarToggleExternalContent"
+              className="btn btn-success rounded-0 pl-3 pr-3"
+              onClick={this.onNew.bind(this)}
+            >
+              Novo
+            </button>
+          )}
         </nav>
-        <br></br>
         <div className="container">
-          <table className="table">
+          <table className="table bg-light Regular shadow">
             <thead className="thead-dark">
-              <th>Nome</th>
-              <th>Data de nascimento</th>
-              <th>Sexo</th>
-              <th>Nacionalidade</th>
-              <th></th>
+              <tr>
+                <th>Nome</th>
+                <th>Data de nascimento</th>
+                <th>Sexo</th>
+                <th>Nacionalidade</th>
+                <th className="text-center">Opções</th>
+              </tr>
             </thead>
             <tbody>
               {this.state.items.map((item, index) => (
                 <tr key={index}>
-                  <td className="text-left">{item.nome}</td>
-                  <td className="text-left">{item.dtnascimento}</td>
-                  <td className="text-left">{item.sexo}</td>
-                  <td className="text-left">{item.nacionalidade}</td>
-                  <td className="text-right">
-                    <button
-                      href=""
-                      className="btn btn-primary mr-1"
-                      disabled={this.state.editDisabled}
-                      onClick={this.onShow.bind(this, item.id)}
-                    >
-                      Show
-                    </button>
-                    <button
-                      className="btn btn-info mr-1 text-light"
-                      disabled={this.state.editDisabled}
-                      onClick={this.onEdit.bind(this, item.id)}
-                      type="button"
-                      data-toggle="collapse in"
-                      data-target="#navbarToggleExternalContent"
-                      aria-controls="navbarToggleExternalContent"
-                      aria-expanded="false"
-                      aria-label="Toggle navigation"
-                    >
-                      Edit
-                    </button>
-                    <button
-                      href=""
-                      className="btn btn-danger"
-                      disabled={this.state.editDisabled}
-                      onClick={this.onDelete.bind(this, item.id)}
-                    >
-                      Delete
-                    </button>
+                  <td className="text-left align-middle">{item.nome}</td>
+                  <td className="text-left align-middle">
+                    {item.dtnascimento}
+                  </td>
+                  <td className="text-left align-middle">{item.sexo}</td>
+                  <td className="text-left align-middle">
+                    {item.nacionalidade}
+                  </td>
+                  <td className="text-center align-middle">
+                    <div className="btn-group m-0 p-0">
+                      <button
+                        href=""
+                        className="btn btn-primary"
+                        disabled={this.state.editDisabled}
+                        onClick={this.onShow.bind(this, item)}
+                        data-toggle="modal" 
+                        data-target="#myModal"
+                      >
+                        Exibir
+                      </button>
+                      <button
+                        className="btn btn-info text-light"
+                        disabled={this.state.editDisabled}
+                        onClick={this.onEdit.bind(this, item.id)}
+                        type="button"
+                        data-toggle="collapse in"
+                        data-target="#navbarToggleExternalContent"
+                        aria-controls="navbarToggleExternalContent"
+                        aria-expanded="false"
+                        aria-label="Toggle navigation"
+                      >
+                        Editar
+                      </button>
+                      <button
+                        href=""
+                        className="btn btn-danger"
+                        disabled={this.state.editDisabled}
+                        onClick={this.onDelete.bind(this, item.id)}
+                      >
+                        Excluir
+                      </button>
+                    </div>
                   </td>
                 </tr>
               ))}
