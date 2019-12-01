@@ -7,6 +7,9 @@ class BookList extends Component {
   constructor() {
     super();
     this.state = {
+      nameAuthor:"",
+      nameGenre:"",
+      namePublisher:"",
       id: "",
       idRegister: true,
       titulo: "",
@@ -24,11 +27,43 @@ class BookList extends Component {
     this.onSubmit = this.onSubmit.bind(this);
     this.onChange = this.onChange.bind(this);
   }
-  componentDidMount() {
-    this.getAll();
+
+  authorShowParams(authorId) {
+    this.state.Authors.forEach(Author => {
+      if (Author.id === authorId) {
+        // eslint-disable-next-line react/no-direct-mutation-state
+        this.state.nameAuthor = Author.nome
+      }
+    })
+  }
+
+  genreShowParams(genreId) {
+    this.state.Genres.forEach(Genre => {
+      if (Genre.id === genreId) {
+        // eslint-disable-next-line react/no-direct-mutation-state
+        this.state.nameGenre = Genre.genero
+      }
+    })
+  }
+
+  publisherShowParams(publisherId) {
+    this.state.Publishers.forEach(Publisher => {
+      if (Publisher.id === publisherId) {
+        // eslint-disable-next-line react/no-direct-mutation-state
+        this.state.namePublisher = Publisher.nome
+      }
+    })
+  }
+
+  newMethod() {
     this.getAuthors();
     this.getGenres();
     this.getPublishers();
+  }
+
+  componentDidMount() {
+    this.getAll();
+    this.newMethod();
   }
 
   onChange = e => {
@@ -62,7 +97,7 @@ class BookList extends Component {
           Authors: [...data]
         },
         () => {
-          console.log(this.state.Books);
+          console.log(this.state.Authors);
         }
       );
     });
@@ -75,7 +110,7 @@ class BookList extends Component {
           Genres: [...data]
         },
         () => {
-          console.log(this.state.Books);
+          console.log(this.state.Genres);
         }
       );
     });
@@ -88,7 +123,7 @@ class BookList extends Component {
           Publishers: [...data]
         },
         () => {
-          console.log(this.state.Books);
+          console.log(this.state.Publishers);
         }
       );
     });
@@ -147,7 +182,11 @@ class BookList extends Component {
   onShow = (Book, e) => {
     e.preventDefault();
     this.setState({
-      titulo: Book.titulo
+      titulo: Book.titulo,
+      dtlancamento: Book.dtlancamento,
+      author_id: Book.author_id,
+      genre_id: Book.genre_id,
+      publisher_id: Book.publisher_id
     });
   };
 
@@ -156,7 +195,7 @@ class BookList extends Component {
     this.onToogleOpen();
 
     var data = [...this.state.Books];
-    data.forEach((Book, index) => {
+    data.forEach(Book => {
       if (Book.id === Bookid) {
         this.setState({
           toogleOpen: true,
@@ -230,11 +269,18 @@ class BookList extends Component {
                     &times;
                   </button>
                 </div>
-                <ul className="modal-body">
-                  <li className="text-primary">{this.state.genre_id}</li>
-                  <li className="text-primary">{this.state.author_id}</li>
-                  <li className="text-primary">{this.state.publisher_id}</li>
-                </ul>
+                <div className="modal-body">
+                  <ul>
+                    {this.genreShowParams(this.state.genre_id)}
+                    <li className="text-primary">Gênero: {this.state.nameGenre}</li>
+
+                    {this.authorShowParams(this.state.author_id)}
+                    <li className="text-primary">Autor(a): {this.state.nameAuthor}</li>
+
+                    {this.publisherShowParams(this.state.publisher_id)}
+                    <li className="text-primary">Editora: {this.state.namePublisher}</li>
+                  </ul>
+                </div>
                 <div className="modal-footer">
                   <button
                     type="button"
@@ -293,53 +339,67 @@ class BookList extends Component {
               <div className="row">
                 <div className="col-md-4">
                   <h4 htmlFor="author_id">Autor:</h4>
-                  <select
+                  <select required
                     className="form-control"
                     id="author_id"
                     name="author_id"
                     value={this.state.author_id || ""}
                     onChange={this.onChange.bind(this)}
-                    required
+                    
                   >
+                    <option value="">Autor</option>
                     {this.state.Authors.map((Author, index) => (
-                      <option key={index} value={Author.id} label={Author.nome}/>
+                      <option
+                        key={index}
+                        value={Author.id}
+                        label={Author.nome}
+                      />
                     ))}
                   </select>
                 </div>
 
                 <div className="col-md-4">
                   <h4 htmlFor="genre_id">Gênero Literário:</h4>
-                  <select
+                  <select required
                     className="form-control"
                     id="genre_id"
                     name="genre_id"
                     value={this.state.genre_id || ""}
                     onChange={this.onChange.bind(this)}
-                    required
+                    
                   >
+                    <option value="">Gênero</option>
                     {this.state.Genres.map((Genre, index) => (
-                      <option key={index} value={Genre.id} label={Genre.genero}/>
+                      <option
+                        key={index}
+                        value={Genre.id}
+                        label={Genre.genero}
+                      />
                     ))}
                   </select>
                 </div>
 
                 <div className="col-md-4">
-                <h4 htmlFor="publisher_id">Editora:</h4>
-                <select
+                  <h4 htmlFor="publisher_id">Editora:</h4>
+                  <select required
                     className="form-control"
                     id="publisher_id"
                     name="publisher_id"
                     value={this.state.publisher_id || ""}
                     onChange={this.onChange.bind(this)}
-                    required
+                    
                   >
+                    <option value="">Editora</option>
                     {this.state.Publishers.map((Publisher, index) => (
-                      <option key={index} value={Publisher.id} label={Publisher.nome}/>
+                      <option
+                        key={index}
+                        value={Publisher.id}
+                        label={Publisher.nome}
+                      />
                     ))}
                   </select>
+                </div>
               </div>
-              </div>
-              
             </div>
 
             <br></br>
@@ -399,10 +459,13 @@ class BookList extends Component {
               {this.state.Books.map((Book, index) => (
                 <tr key={index}>
                   <td className="text-left align-middle">{Book.titulo}</td>
+                  
                   <td className="text-left align-middle">
                     {Book.dtlancamento}
                   </td>
+
                   <td className="text-left align-middle">{Book.author_id}</td>
+
                   <td className="text-left align-middle">{Book.genre_id}</td>
                   <td className="text-left align-middle">
                     {Book.publisher_id}

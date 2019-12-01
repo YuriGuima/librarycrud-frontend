@@ -1,3 +1,4 @@
+/* eslint-disable jsx-a11y/alt-text */
 import React from "react";
 import AuthorList from "./pages/author/index";
 import GenreList from "./pages/genre/index";
