@@ -220,3 +220,83 @@ export const showPublisher = id => {
       return res.data;
     });
 };
+
+
+// Rotas do Livro
+export const getBookList = () => {
+  return axios
+    .get(`http://127.0.0.1:8000/api/book`, {
+      headers: { "Contente-type": "application/json" }
+    })
+    .then(res => {
+      return res.data;
+    });
+};
+
+export const addBook = (titulo,dtlancamento,authorid,genreid,publisherid) => {
+  return axios
+    .post(
+      "http://127.0.0.1:8000/api/book",
+      {
+        titulo: titulo,
+        dtlancamento: dtlancamento,
+        author_id: authorid,
+        genre_id: genreid,
+        publisher_id: publisherid
+      },
+      {
+        headers: { "Content-Type": "application/json" }
+      }
+    )
+    .then(res => {
+      console.log(res);
+    });
+};
+
+
+export const updateBook = (titulo,dtlancamento,authorid,genreid,publisherid,id) => {
+  return axios
+    .put(`http://127.0.0.1:8000/api/book/${id}`,
+      {
+        id: id,
+        titulo: titulo,
+        dtlancamento: dtlancamento,
+        author_id: authorid,
+        genre_id: genreid,
+        publisher_id: publisherid
+      },
+      {
+        headers: { "Content-Type": "application/json" }
+      }
+    )
+    .then(res => {
+      console.log(res);
+    })
+    .catch(err => {
+      console.log(err);
+    });
+};
+
+
+export const deleteBook = id => {
+  axios
+    .delete(`http://127.0.0.1:8000/api/book/${id}`, {
+      headers: { "Content-Type": "application/json" }
+    })
+    .then(res => {
+      console.log(res);
+    })
+    .catch(err => {
+      console.log(err);
+    });
+};
+
+export const showBook = id => {
+  axios
+    .get(`http://127.0.0.1:8000/api/book/${id}`,{
+      headers: { "Contente-type": "application/json" }
+    })
+    .then(res => {
+      return res.data;
+    });
+};
