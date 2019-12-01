@@ -1,15 +1,15 @@
 import React from "react";
-import AuthorList from "./components/author/AuthorList";
-import AuthorCreate from "./components/author/AuthorCreate";
+import AuthorList from "./pages/author/index";
+import GenreList from "./pages/genre/index";
+import Logo from "./assets/book.png";
 import { BrowserRouter as Router, Switch, Route, Link } from "react-router-dom";
 
 function App() {
   return (
     <Router>
-      <div className="pos-f-t h-10">
-        <div className="jumbotron text-center m-0 pt-3 pb-1">
-          <h3>Teste Técnico</h3>
-          <p>Sistema para estoque de Biblioteca.</p>
+      <div>
+        <div className="jumbotron text-center m-0 pt-2 pb-2">
+          <img src={Logo} width="11%" height="auto" />
         </div>
         <nav className="navbar navbar-dark bg-dark p-0">
           <div className="nav">
@@ -25,7 +25,7 @@ function App() {
               Editoras
             </Link>
 
-            <Link className="nav-link btn-dark" to={"/author"}>
+            <Link className="nav-link btn-dark" to={"/genre"}>
               Gêneros
             </Link>
 
@@ -46,14 +46,9 @@ function App() {
       </div>
 
       <div>
-        {/* A <Switch> looks through its children <Route>s and
-            renders the first one that matches the current URL. */}
         <Switch>
-          <Route path="/author/create">
-            <AuthorCreate />
-          </Route>
-          <Route path="/author/update" component={AuthorCreate}>
-            <AuthorCreate />
+          <Route path="/genre">
+            <GenreList />
           </Route>
           <Route path="/author">
             <AuthorList />
@@ -63,15 +58,13 @@ function App() {
           </Route>
         </Switch>
       </div>
-      <br></br>
-      <br></br>
-      <footer className="jumbotron bg-dark rounded-0 mb-0 pt-5 pb-3 pl-3 navbar-fixed-bottom">
+
+      <footer className="jumbotron bg-dark rounded-0 mb-0 p-1 fixed-bottom">
         <a
           href="https://github.com/YuriGuima?tab=repositories"
           className="text-light text-decoration-none"
         >
-          {" "}
-          GitHub - Librarycrud
+          GitHub - LibraryCrud
         </a>
       </footer>
     </Router>

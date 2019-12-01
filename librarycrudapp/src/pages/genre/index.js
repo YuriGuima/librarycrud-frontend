@@ -1,24 +1,21 @@
 import React, { Component } from "react";
 import { ToastsContainer, ToastsStore } from "react-toasts";
 import {
-  getList,
-  addItem,
-  updateItem,
-  deleteItem
-} from "../../AuthorFunctions";
+  getGenreList,
+  addGenre,
+  updateGenre,
+  deleteGenre
+} from "../../routes";
 
-class List extends Component {
+class GenreList extends Component {
   constructor() {
     super();
     this.state = {
       id: "",
-      idRegister: true, 
-      nome: "",
-      dtnascimento: "",
-      sexo: "",
-      nacionalidade: "",
+      idRegister: true,
+      genero: "",
       editDisabled: false,
-      items: []
+      Genres: []
     };
 
     this.onSubmit = this.onSubmit.bind(this);
@@ -35,17 +32,14 @@ class List extends Component {
   };
 
   getAll = () => {
-    getList().then(data => {
+    getGenreList().then(data => {
       this.setState(
         {
-          nome: "",
-          dtnascimento: "",
-          sexo: "",
-          nacionalidade: "",
-          items: [...data]
+          genero: "",
+          Genres: [...data]
         },
         () => {
-          console.log(this.state.items);
+          console.log(this.state.Genres);
         }
       );
     });
@@ -62,30 +56,21 @@ class List extends Component {
   onSubmit = e => {
     e.preventDefault();
     
-    addItem(
-      this.state.nome,
-      this.state.dtnascimento,
-      this.state.sexo,
-      this.state.nacionalidade
+    addGenre(
+      this.state.genero
     ).then(() => {
       this.getAll();
-      this.successAlert("Autor cadastrado com sucesso!");
+      this.successAlert("Gênero cadastrado com sucesso!");
     });
     this.setState({
-      nome: "",
-      dtnascimento: "",
-      sexo: "",
-      nacionalidade: ""
+      genero: ""
     });
   };
 
   onUpdate = e => {
     e.preventDefault();
-    updateItem(
-      this.state.nome,
-      this.state.dtnascimento,
-      this.state.sexo,
-      this.state.nacionalidade,
+    updateGenre(
+      this.state.genero,
       this.state.id
     ).then(() => {
       this.successAlert("Dados alterados com sucesso!");
@@ -98,30 +83,24 @@ class List extends Component {
     this.getAll();
   };
 
-  onShow = (item, e) => {
+  onShow = (Genre, e) => {
     e.preventDefault();
     this.setState({
-      nome: item.nome,
-      dtnascimento: item.dtnascimento,
-      sexo: item.sexo,
-      nacionalidade: item.nacionalidade
+      genero: Genre.genero
     });
   };
 
-  onEdit = (itemid, e) => {
+  onEdit = (Genreid, e) => {
     e.preventDefault();
     this.onToogleOpen();
 
-    var data = [...this.state.items];
-    data.forEach((item, index) => {
-      if (item.id === itemid) {
+    var data = [...this.state.Genres];
+    data.forEach((Genre, index) => {
+      if (Genre.id === Genreid) {
         this.setState({
           toogleOpen: true,
-          id: item.id,
-          nome: item.nome,
-          dtnascimento: item.dtnascimento,
-          sexo: item.sexo,
-          nacionalidade: item.nacionalidade,
+          id: Genre.id,
+          genero: Genre.genero,
           editDisabled: true
         });
       }
@@ -133,17 +112,14 @@ class List extends Component {
     this.setState({
       toogleOpen: true,
       id: "",
-      nome: "",
-      dtnascimento: "",
-      sexo: "",
-      nacionalidade: "",
+      genero: "",
       editDisabled: false
     });
   };
 
   onDelete = (val, e) => {
     e.preventDefault();
-    deleteItem(val);
+    deleteGenre(val);
     this.getAll();
   };
 
@@ -153,10 +129,7 @@ class List extends Component {
     this.setState({
       toogleOpen: true,
       id: "",
-      nome: "",
-      dtnascimento: "",
-      sexo: "",
-      nacionalidade: "",
+      genero: "",
       editDisabled: false
     });
   };
@@ -180,17 +153,13 @@ class List extends Component {
             <div className="modal-dialog">
               <div className="modal-content">
                 <div className="modal-header">
-                  <h4>{this.state.nome}</h4>
+                  <h4>Gênero Literário</h4>
                   <button type="button" className="close" data-dismiss="modal">
                     &times;
                   </button>
                 </div>
                 <div className="modal-body">
-                  <ul>
-                    <li>Data de nascimento: { this.state.dtnascimento }</li>
-                    <li>Sexo: { this.state.sexo }</li>
-                    <li>Nacionalidade: { this.state.nacionalidade }</li>
-                  </ul>
+                  <h4 className="text-primary">{ this.state.genero }</h4>
                 </div>
                 <div className="modal-footer">
                   <button
@@ -213,64 +182,22 @@ class List extends Component {
             <br></br>
             <div className="form-group">
               <div className="row">
-                <div className="col-md-9">
-                  <h4 htmlFor="nome">Nome:</h4>
-                  <div>
+                <div className="col-md-12 row">
+                  <h4 htmlFor="genero" className="col-md-2 text-center">Gênero:</h4>
+                  <div className="col-md-10 pr-0">
                     <input
                       type="text"
                       className="form-control"
-                      id="nome"
-                      name="nome"
-                      value={this.state.nome || ""}
+                      id="genero"
+                      name="genero"
+                      value={this.state.genero || ""}
                       onChange={this.onChange.bind(this)}
+                      maxLength="100"
                       required
                     />
                   </div>
-                </div>
+                </div>                
 
-                <div className="col-md-3">
-                  <h4 htmlFor="dtnascimento">Data de Nascimento:</h4>
-                  <input
-                    type="date"
-                    className="form-control"
-                    id="dtnascimento"
-                    name="dtnascimento"
-                    value={this.state.dtnascimento || ""}
-                    onChange={this.onChange.bind(this)}
-                    required
-                  />
-                </div>
-              </div>
-
-              <br></br>
-              <div className="row">
-                <div className="col-md-6">
-                  <h4 htmlFor="sexo">Sexo:</h4>
-                  <input
-                    type="text"
-                    className="form-control"
-                    id="sexo"
-                    name="sexo"
-                    value={this.state.sexo || ""}
-                    onChange={this.onChange.bind(this)}
-                    required
-                  />
-                </div>
-
-                <div className="col-md-6">
-                  <h4 htmlFor="nome">Nacionalidade:</h4>
-                  <div>
-                    <input
-                      type="text"
-                      className="form-control"
-                      id="nacionalidade"
-                      name="nacionalidade"
-                      value={this.state.nacionalidade || ""}
-                      onChange={this.onChange.bind(this)}
-                      required
-                    />
-                  </div>
-                </div>
               </div>
             </div>
 
@@ -323,34 +250,25 @@ class List extends Component {
           )}
         </nav>
         <div className="container">
-          <table className="table bg-light Regular shadow">
+          <table className="table bg-light Regular shadow mb-5">
             <thead className="thead-dark">
               <tr>
-                <th>Nome</th>
-                <th>Data de nascimento</th>
-                <th>Sexo</th>
-                <th>Nacionalidade</th>
-                <th className="text-center">Opções</th>
+                <th className="text-center">Gênero</th>
+                <th className="text-right pr-5">Opções</th>
               </tr>
             </thead>
             <tbody>
-              {this.state.items.map((item, index) => (
+              {this.state.Genres.map((Genre, index) => (
                 <tr key={index}>
-                  <td className="text-left align-middle">{item.nome}</td>
-                  <td className="text-left align-middle">
-                    {item.dtnascimento}
-                  </td>
-                  <td className="text-left align-middle">{item.sexo}</td>
-                  <td className="text-left align-middle">
-                    {item.nacionalidade}
-                  </td>
-                  <td className="text-center align-middle">
+                  <td className="text-center align-middle">{Genre.genero}</td>
+                  
+                  <td className="text-right align-middle">
                     <div className="btn-group m-0 p-0">
                       <button
                         href=""
                         className="btn btn-primary"
                         disabled={this.state.editDisabled}
-                        onClick={this.onShow.bind(this, item)}
+                        onClick={this.onShow.bind(this, Genre)}
                         data-toggle="modal" 
                         data-target="#myModal"
                       >
@@ -359,7 +277,7 @@ class List extends Component {
                       <button
                         className="btn btn-info text-light"
                         disabled={this.state.editDisabled}
-                        onClick={this.onEdit.bind(this, item.id)}
+                        onClick={this.onEdit.bind(this, Genre.id)}
                         type="button"
                         data-toggle="collapse in"
                         data-target="#navbarToggleExternalContent"
@@ -373,7 +291,7 @@ class List extends Component {
                         href=""
                         className="btn btn-danger"
                         disabled={this.state.editDisabled}
-                        onClick={this.onDelete.bind(this, item.id)}
+                        onClick={this.onDelete.bind(this, Genre.id)}
                       >
                         Excluir
                       </button>
@@ -384,9 +302,11 @@ class List extends Component {
             </tbody>
           </table>
         </div>
+        <br></br>
+        <br></br>
       </div>
     );
   }
 }
 
-export default List;
+export default GenreList;
