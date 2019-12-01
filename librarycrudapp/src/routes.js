@@ -148,3 +148,75 @@ export const showGenre = id => {
       return res.data;
     });
 };
+
+
+// Rotas da Editora
+export const getPublisherList = () => {
+  return axios
+    .get(`http://127.0.0.1:8000/api/publisher`, {
+      headers: { "Contente-type": "application/json" }
+    })
+    .then(res => {
+      return res.data;
+    });
+};
+
+export const addPublisher = (nome) => {
+  return axios
+    .post(
+      "http://127.0.0.1:8000/api/publisher",
+      {
+        nome: nome
+      },
+      {
+        headers: { "Content-Type": "application/json" }
+      }
+    )
+    .then(res => {
+      console.log(res);
+    });
+};
+
+
+export const updatePublisher = (nome,id) => {
+  return axios
+    .put(`http://127.0.0.1:8000/api/publisher/${id}`,
+      {
+        id: id,
+        nome: nome
+      },
+      {
+        headers: { "Content-Type": "application/json" }
+      }
+    )
+    .then(res => {
+      console.log(res);
+    })
+    .catch(err => {
+      console.log(err);
+    });
+};
+
+
+export const deletePublisher = id => {
+  axios
+    .delete(`http://127.0.0.1:8000/api/publisher/${id}`, {
+      headers: { "Content-Type": "application/json" }
+    })
+    .then(res => {
+      console.log(res);
+    })
+    .catch(err => {
+      console.log(err);
+    });
+};
+
+export const showPublisher = id => {
+  axios
+    .get(`http://127.0.0.1:8000/api/publisher/${id}`,{
+      headers: { "Contente-type": "application/json" }
+    })
+    .then(res => {
+      return res.data;
+    });
+};

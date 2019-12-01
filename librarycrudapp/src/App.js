@@ -1,6 +1,7 @@
 import React from "react";
 import AuthorList from "./pages/author/index";
 import GenreList from "./pages/genre/index";
+import PublisherList from "./pages/publisher/index";
 import Logo from "./assets/book.png";
 import { BrowserRouter as Router, Switch, Route, Link } from "react-router-dom";
 
@@ -21,7 +22,7 @@ function App() {
               Autores
             </Link>
 
-            <Link className="nav-link btn-dark" to={"/author"}>
+            <Link className="nav-link btn-dark" to={"/publisher"}>
               Editoras
             </Link>
 
@@ -47,11 +48,15 @@ function App() {
 
       <div>
         <Switch>
-          <Route path="/genre">
-            <GenreList />
-          </Route>
+
           <Route path="/author">
             <AuthorList />
+          </Route>
+          <Route path="/publisher">
+            <PublisherList />
+          </Route>
+          <Route path="/genre">
+            <GenreList />
           </Route>
           <Route path="/">
             <Home />
