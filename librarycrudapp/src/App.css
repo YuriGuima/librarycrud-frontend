@@ -1,13 +1,8 @@
-.abc {
+.linknavbar {
     color: #e9ecef;
 }
 
-.abc:hover {
-    background-color: #28a745;
-    color: white;
-}
-
-.abc:visited {
+.linknavbar:hover {
     background-color: #28a745;
     color: white;
 }

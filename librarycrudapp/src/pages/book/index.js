@@ -1,4 +1,5 @@
 import React, { Component } from "react";
+import Offline from "../../components/offlinepage"
 import "./styles.css";
 import { ToastsContainer, ToastsStore } from "react-toasts";
 import ModalShow from "../../components/modal";
@@ -298,7 +299,8 @@ class BookList extends Component {
   }
 
   render() {
-    return (
+    const principal = (
+      
       <div className=".container-fluid">
         <ModalShow content={this.modalContent()} />
         <ToastsContainer store={ToastsStore} />
@@ -544,7 +546,17 @@ class BookList extends Component {
           </table>
         </div>
       </div>
-    );
+      );
+
+      const offline = (
+        <Offline />
+      )
+  
+      return (
+        <div>
+        {localStorage.usertoken ? principal : offline}
+        </div>
+      )
   }
 }
 
