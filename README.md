@@ -1,5 +1,7 @@
 # librarycrud-frontend
 
+Frontend rodando na porta: http://localhost:3000/
+
 Usei Laravel para o Backend, ReactJS para o Frontend e Xampp com MySql para o banco de dados.
 
 Para rodar o Frontend: Entrar na pasta "\librarycrud-frontend\librarycrudapp" e executar o comando yarn start. (Talvez seja preciso executar o comando "yarn install" antes).
