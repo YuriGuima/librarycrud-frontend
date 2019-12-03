@@ -61,6 +61,7 @@ export const deleteAuthor = id => {
       headers: { "Content-Type": "application/json" }
     })
     .then(res => {
+      document.location.reload(true);
       console.log(res);
     })
     .catch(err => {
@@ -124,6 +125,7 @@ export const deleteGenre = id => {
       headers: { "Content-Type": "application/json" }
     })
     .then(res => {
+      document.location.reload(true);
       console.log(res);
     })
     .catch(err => {
@@ -187,6 +189,7 @@ export const deletePublisher = id => {
       headers: { "Content-Type": "application/json" }
     })
     .then(res => {
+      document.location.reload(true);
       console.log(res);
     })
     .catch(err => {
@@ -259,6 +262,7 @@ export const deleteBook = id => {
       headers: { "Content-Type": "application/json" }
     })
     .then(res => {
+      document.location.reload(true);
       console.log(res);
     })
     .catch(err => {
