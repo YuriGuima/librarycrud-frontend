@@ -1,0 +1,11 @@
+td {
+    max-width: 550px;
+    white-space: nowrap;
+    width: 10em;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.optionButtons{
+    width: 2.7em;
+}

@@ -1,11 +1,8 @@
 import React, { Component } from "react";
+import './styles.css';
 import { ToastsContainer, ToastsStore } from "react-toasts";
-import {
-  getGenreList,
-  addGenre,
-  updateGenre,
-  deleteGenre
-} from "../../routes";
+import ModalShow from "../../components/modal";
+import { getGenreList, addGenre, updateGenre, deleteGenre } from "../../routes";
 
 class GenreList extends Component {
   constructor() {
@@ -31,6 +28,49 @@ class GenreList extends Component {
     });
   };
 
+
+  onSubmit = e => {
+    e.preventDefault();
+
+    addGenre(this.state.genero).then(() => {
+      this.getAll();
+      this.successAlert("Gênero cadastrado com sucesso!");
+    });
+    this.setState({
+      genero: ""
+    });
+  };
+
+
+  onUpdate = e => {
+    e.preventDefault();
+    updateGenre(this.state.genero, this.state.id).then(() => {
+      this.successAlert("Dados alterados com sucesso!");
+      this.onToogleClose();
+      this.getAll();
+      this.setState({
+        editDisabled: false
+      });
+    });
+    this.getAll();
+  };
+
+
+  onShow = (Genre, e) => {
+    e.preventDefault();
+    this.setState({
+      genero: Genre.genero
+    });
+  };
+
+
+  onDelete = (val, e) => {
+    e.preventDefault();
+    deleteGenre(val);
+    this.getAll();
+  };
+
+
   getAll = () => {
     getGenreList().then(data => {
       this.setState(
@@ -45,50 +85,29 @@ class GenreList extends Component {
     });
   };
 
-  successAlert = msg => {
-    ToastsStore.success(msg);
-  };
 
-  errorAlert = msg => {
-    ToastsStore.error(msg);
-  };
+  onToogleOpen() {
+    // eslint-disable-next-line no-undef
+    $(".collapse").collapse("show");
+  }
 
-  onSubmit = e => {
+  onToogleClose() {
+    // eslint-disable-next-line no-undef
+    $(".collapse").collapse("hide");
+  }
+
+
+  onNew = e => {
     e.preventDefault();
-    
-    addGenre(
-      this.state.genero
-    ).then(() => {
-      this.getAll();
-      this.successAlert("Gênero cadastrado com sucesso!");
-    });
+    this.onToogleOpen();
     this.setState({
-      genero: ""
+      toogleOpen: true,
+      id: "",
+      genero: "",
+      editDisabled: false
     });
   };
 
-  onUpdate = e => {
-    e.preventDefault();
-    updateGenre(
-      this.state.genero,
-      this.state.id
-    ).then(() => {
-      this.successAlert("Dados alterados com sucesso!");
-      this.onToogleClose();
-      this.getAll();
-      this.setState({
-        editDisabled: false
-      });
-    });
-    this.getAll();
-  };
-
-  onShow = (Genre, e) => {
-    e.preventDefault();
-    this.setState({
-      genero: Genre.genero
-    });
-  };
 
   onEdit = (Genreid, e) => {
     e.preventDefault();
@@ -107,6 +126,7 @@ class GenreList extends Component {
     });
   };
 
+
   onCancelEdit = e => {
     e.preventDefault();
     this.setState({
@@ -117,73 +137,45 @@ class GenreList extends Component {
     });
   };
 
-  onDelete = (val, e) => {
-    e.preventDefault();
-    deleteGenre(val);
-    this.getAll();
-  };
 
-  onNew = e => {
-    e.preventDefault();
-    this.onToogleOpen();
-    this.setState({
-      toogleOpen: true,
-      id: "",
-      genero: "",
-      editDisabled: false
-    });
-  };
-
-  onToogleOpen() {
-    // eslint-disable-next-line no-undef
-    $(".collapse").collapse("show");
+  modalContent() {
+    return (
+      <div>
+        <div className="modal-header">
+          <h4>Gênero Literário</h4>
+          <button type="button" className="close" data-dismiss="modal">
+            &times;
+          </button>
+        </div>
+        <div className="modal-header">
+          <h4 className="contentModal">{this.state.genero}</h4>
+        </div>
+      </div>
+    );
   }
 
-  onToogleClose() {
-    // eslint-disable-next-line no-undef
-    $(".collapse").collapse("hide");
-  }
+
+  successAlert = msg => {
+    ToastsStore.success(msg);
+  };
+
 
   render() {
     return (
       <div className=".container-fluid">
-        
-        <div className="container">
-          <div className="modal fade" id="myModal" role="dialog">
-            <div className="modal-dialog">
-              <div className="modal-content">
-                <div className="modal-header">
-                  <h4>Gênero Literário</h4>
-                  <button type="button" className="close" data-dismiss="modal">
-                    &times;
-                  </button>
-                </div>
-                <div className="modal-body">
-                  <h4 className="text-primary">{ this.state.genero }</h4>
-                </div>
-                <div className="modal-footer">
-                  <button
-                    type="button"
-                    className="btn btn-default"
-                    data-dismiss="modal"
-                  >
-                    Close
-                  </button>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-        
+        <ModalShow content={this.modalContent()}/>
         <ToastsContainer store={ToastsStore} />
         <div className="collapse container" id="navbarToggleExternalContent">
-          <form onSubmit={!this.state.editDisabled ? (this.onSubmit):(this.onUpdate)} className="needs-validation">
-            <br></br>
-            <br></br>
-            <div className="form-group">
+          <form
+            onSubmit={!this.state.editDisabled ? this.onSubmit : this.onUpdate}
+            className="needs-validation mt-5 mb-5"
+          >
+            <div className="form-group mb-5">
               <div className="row">
                 <div className="col-md-12 row">
-                  <h4 htmlFor="genero" className="col-md-2 text-center">Gênero:</h4>
+                  <h4 htmlFor="genero" className="col-md-2 text-center">
+                    Gênero:
+                  </h4>
                   <div className="col-md-10 pr-0">
                     <input
                       type="text"
@@ -196,31 +188,21 @@ class GenreList extends Component {
                       required
                     />
                   </div>
-                </div>                
-
+                </div>
               </div>
             </div>
 
-            <br></br>
             {!this.state.editDisabled ? (
-              <button
-                type="submit"
-                className="btn btn-success btn-block"
-              >
+              <button type="submit" className="btn btn-success btn-block">
                 Cadastrar
               </button>
             ) : (
-              <button
-                type="submit"
-                className="btn btn-primary btn-block"
-              >
+              <button type="submit" className="btn btn-primary btn-block">
                 Update
               </button>
             )}
-            
           </form>
-          <br></br>
-          <br></br>
+
         </div>
         <nav className="navbar navbar-dark jumbotron p-0">
           {this.state.editDisabled ? (
@@ -249,8 +231,8 @@ class GenreList extends Component {
             </button>
           )}
         </nav>
-        <div className="container">
-          <table className="table bg-light Regular shadow mb-5">
+        <div className="container pb-5">
+          <table className="table bg-light shadow mb-5">
             <thead className="thead-dark">
               <tr>
                 <th className="text-center">Gênero</th>
@@ -261,21 +243,21 @@ class GenreList extends Component {
               {this.state.Genres.map((Genre, index) => (
                 <tr key={index}>
                   <td className="text-center align-middle">{Genre.genero}</td>
-                  
+
                   <td className="text-right align-middle">
                     <div className="btn-group m-0 p-0">
                       <button
                         href=""
-                        className="btn btn-primary"
+                        className="btn btn-info optionButtons"
                         disabled={this.state.editDisabled}
                         onClick={this.onShow.bind(this, Genre)}
-                        data-toggle="modal" 
+                        data-toggle="modal"
                         data-target="#myModal"
                       >
-                        Exibir
+                        <i className="fas fa-eye"></i>
                       </button>
                       <button
-                        className="btn btn-info text-light"
+                        className="btn btn-primary optionButtons"
                         disabled={this.state.editDisabled}
                         onClick={this.onEdit.bind(this, Genre.id)}
                         type="button"
@@ -285,15 +267,15 @@ class GenreList extends Component {
                         aria-expanded="false"
                         aria-label="Toggle navigation"
                       >
-                        Editar
+                        <i className="fas fa-edit"></i>
                       </button>
                       <button
                         href=""
-                        className="btn btn-danger"
+                        className="btn btn-danger optionButtons"
                         disabled={this.state.editDisabled}
                         onClick={this.onDelete.bind(this, Genre.id)}
                       >
-                        Excluir
+                        <i className="fas fa-times"></i>
                       </button>
                     </div>
                   </td>
@@ -302,8 +284,6 @@ class GenreList extends Component {
             </tbody>
           </table>
         </div>
-        <br></br>
-        <br></br>
       </div>
     );
   }

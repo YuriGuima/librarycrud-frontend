@@ -1,4 +1,5 @@
 import axios from 'axios';
+import { ToastsStore } from "react-toasts";
 
 // Rotas do Autor
 export const getAuthorList = () => {
@@ -63,17 +64,8 @@ export const deleteAuthor = id => {
       console.log(res);
     })
     .catch(err => {
+      ToastsStore.error("Autor registrado em um Livro!");
       console.log(err);
-    });
-};
-
-export const showAuthor = id => {
-  axios
-    .get(`http://127.0.0.1:8000/api/author/${id}`,{
-      headers: { "Contente-type": "application/json" }
-    })
-    .then(res => {
-      return res.data;
     });
 };
 
@@ -135,17 +127,8 @@ export const deleteGenre = id => {
       console.log(res);
     })
     .catch(err => {
+      ToastsStore.error("Genero Literario registrado em um Livro!");
       console.log(err);
-    });
-};
-
-export const showGenre = id => {
-  axios
-    .get(`http://127.0.0.1:8000/api/genre/${id}`,{
-      headers: { "Contente-type": "application/json" }
-    })
-    .then(res => {
-      return res.data;
     });
 };
 
@@ -207,17 +190,8 @@ export const deletePublisher = id => {
       console.log(res);
     })
     .catch(err => {
+      ToastsStore.error("Editora registrada em um Livro!");
       console.log(err);
-    });
-};
-
-export const showPublisher = id => {
-  axios
-    .get(`http://127.0.0.1:8000/api/publisher/${id}`,{
-      headers: { "Contente-type": "application/json" }
-    })
-    .then(res => {
-      return res.data;
     });
 };
 
@@ -289,15 +263,5 @@ export const deleteBook = id => {
     })
     .catch(err => {
       console.log(err);
-    });
-};
-
-export const showBook = id => {
-  axios
-    .get(`http://127.0.0.1:8000/api/book/${id}`,{
-      headers: { "Contente-type": "application/json" }
-    })
-    .then(res => {
-      return res.data;
     });
 };

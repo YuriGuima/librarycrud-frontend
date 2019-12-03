@@ -1,3 +1,13 @@
-.teste {
-    color:red;
+.abc {
+    color: #e9ecef;
+}
+
+.abc:hover {
+    background-color: #28a745;
+    color: white;
+}
+
+.abc:visited {
+    background-color: #28a745;
+    color: white;
 }

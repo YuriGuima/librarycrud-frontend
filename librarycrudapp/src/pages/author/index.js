@@ -1,5 +1,8 @@
 import React, { Component } from "react";
+import '../../index'
+import './styles.css';
 import { ToastsContainer, ToastsStore } from "react-toasts";
+import ModalShow from "../../components/modal";
 import {
   getAuthorList,
   addAuthor,
@@ -7,12 +10,13 @@ import {
   deleteAuthor
 } from "../../routes";
 
+
 class AuthorList extends Component {
   constructor() {
     super();
     this.state = {
       id: "",
-      idRegister: true, 
+      idRegister: true,
       nome: "",
       dtnascimento: "",
       sexo: "",
@@ -24,6 +28,7 @@ class AuthorList extends Component {
     this.onSubmit = this.onSubmit.bind(this);
     this.onChange = this.onChange.bind(this);
   }
+
   componentDidMount() {
     this.getAll();
   }
@@ -34,34 +39,10 @@ class AuthorList extends Component {
     });
   };
 
-  getAll = () => {
-    getAuthorList().then(data => {
-      this.setState(
-        {
-          nome: "",
-          dtnascimento: "",
-          sexo: "",
-          nacionalidade: "",
-          Authors: [...data]
-        },
-        () => {
-          console.log(this.state.Authors);
-        }
-      );
-    });
-  };
 
-  successAlert = msg => {
-    ToastsStore.success(msg);
-  };
-
-  errorAlert = msg => {
-    ToastsStore.error(msg);
-  };
-
-  onSubmit = e => {
+  onSubmit = e => {// Função para adicionar um registro na tabela
     e.preventDefault();
-    
+
     addAuthor(
       this.state.nome,
       this.state.dtnascimento,
@@ -79,7 +60,8 @@ class AuthorList extends Component {
     });
   };
 
-  onUpdate = e => {
+
+  onUpdate = e => {// Atualiza um dado especifico da tabela
     e.preventDefault();
     updateAuthor(
       this.state.nome,
@@ -98,7 +80,8 @@ class AuthorList extends Component {
     this.getAll();
   };
 
-  onShow = (Author, e) => {
+
+  onShow = (Author, e) => {// Exibe os dados do elemento especifico
     e.preventDefault();
     this.setState({
       nome: Author.nome,
@@ -107,8 +90,60 @@ class AuthorList extends Component {
       nacionalidade: Author.nacionalidade
     });
   };
+  
 
-  onEdit = (Authorid, e) => {
+  onDelete = (val, e) => {// Exclui um dado da tabela
+    e.preventDefault();
+    deleteAuthor(val);
+    this.getAll();
+  };
+
+
+  getAll = () => {// Retorna todos os dados da Tabela
+    getAuthorList().then(data => {
+      this.setState(
+        {
+          nome: "",
+          dtnascimento: "",
+          sexo: "",
+          nacionalidade: "",
+          Authors: [...data]
+        },
+        () => {
+          console.log(this.state.Authors);
+        }
+      );
+    });
+  };
+
+
+  onToogleOpen() {// Abre o formulario
+    // eslint-disable-next-line no-undef
+    $(".collapse").collapse("show");
+  }
+
+  onToogleClose() {// Fecha o formulario
+    // eslint-disable-next-line no-undef
+    $(".collapse").collapse("hide");
+  }
+
+
+  onNew = e => {// Abre o formulario no modo de inserção
+    e.preventDefault();
+    this.onToogleOpen();
+    this.setState({
+      toogleOpen: true,
+      id: "",
+      nome: "",
+      dtnascimento: "",
+      sexo: "",
+      nacionalidade: "",
+      editDisabled: false
+    });
+  };
+
+
+  onEdit = (Authorid, e) => {// Abre o formulario no modo de edição e exibe os dados atuais
     e.preventDefault();
     this.onToogleOpen();
 
@@ -128,7 +163,8 @@ class AuthorList extends Component {
     });
   };
 
-  onCancelEdit = e => {
+
+  onCancelEdit = e => {// Fecha o formulario de edição e limpa os campos
     e.preventDefault();
     this.setState({
       toogleOpen: true,
@@ -141,78 +177,45 @@ class AuthorList extends Component {
     });
   };
 
-  onDelete = (val, e) => {
-    e.preventDefault();
-    deleteAuthor(val);
-    this.getAll();
-  };
 
-  onNew = e => {
-    e.preventDefault();
-    this.onToogleOpen();
-    this.setState({
-      toogleOpen: true,
-      id: "",
-      nome: "",
-      dtnascimento: "",
-      sexo: "",
-      nacionalidade: "",
-      editDisabled: false
-    });
-  };
-
-  onToogleOpen() {
-    // eslint-disable-next-line no-undef
-    $(".collapse").collapse("show");
+  modalContent() {// Estrutura da Model de exibição
+    return (
+      <div>
+        <div className="modal-header">
+          <h4 className="contentModal">{this.state.nome}</h4>
+          <button type="button" className="close" data-dismiss="modal">
+            &times;
+          </button>
+        </div>
+        <div className="modal-body">
+          <ul className="list-group">
+            <li className="contentModal"><strong>Data de nascimento:</strong> {this.state.dtnascimento}</li>
+            <li className="contentModal"><strong>Sexo:</strong> {this.state.sexo}</li>
+            <li className="contentModal"><strong>Nacionalidade:</strong> {this.state.nacionalidade}</li>
+          </ul>
+        </div>
+      </div>
+    );
   }
 
-  onToogleClose() {
-    // eslint-disable-next-line no-undef
-    $(".collapse").collapse("hide");
-  }
+
+  successAlert = msg => {// Popup de sucesso
+    ToastsStore.success(msg);
+  };
+
 
   render() {
     return (
       <div className=".container-fluid">
-        
-        <div className="container">
-          <div className="modal fade" id="myModal" role="dialog">
-            <div className="modal-dialog">
-              <div className="modal-content">
-                <div className="modal-header">
-                  <h4>{this.state.nome}</h4>
-                  <button type="button" className="close" data-dismiss="modal">
-                    &times;
-                  </button>
-                </div>
-                <div className="modal-body">
-                  <ul>
-                    <li>Data de nascimento: { this.state.dtnascimento }</li>
-                    <li>Sexo: { this.state.sexo }</li>
-                    <li>Nacionalidade: { this.state.nacionalidade }</li>
-                  </ul>
-                </div>
-                <div className="modal-footer">
-                  <button
-                    type="button"
-                    className="btn btn-default"
-                    data-dismiss="modal"
-                  >
-                    Close
-                  </button>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-        
+        <ModalShow content={this.modalContent()} />
         <ToastsContainer store={ToastsStore} />
         <div className="collapse container" id="navbarToggleExternalContent">
-          <form onSubmit={!this.state.editDisabled ? (this.onSubmit):(this.onUpdate)} className="needs-validation">
-            <br></br>
-            <br></br>
-            <div className="form-group">
-              <div className="row">
+          <form
+            onSubmit={!this.state.editDisabled ? this.onSubmit : this.onUpdate}
+            className="needs-validation mt-5 mb-5"
+          >
+            <div className="form-group mb-5">
+              <div className="row mb-4">
                 <div className="col-md-9">
                   <h4 htmlFor="nome">Nome:</h4>
                   <div>
@@ -223,6 +226,7 @@ class AuthorList extends Component {
                       name="nome"
                       value={this.state.nome || ""}
                       onChange={this.onChange.bind(this)}
+                      placeholder="Ex: Anakin Skywalker"
                       maxLength="100"
                       required
                     />
@@ -243,7 +247,6 @@ class AuthorList extends Component {
                 </div>
               </div>
 
-              <br></br>
               <div className="row">
                 <div className="col-md-6">
                   <h4 htmlFor="sexo">Sexo:</h4>
@@ -254,6 +257,7 @@ class AuthorList extends Component {
                     name="sexo"
                     value={this.state.sexo || ""}
                     onChange={this.onChange.bind(this)}
+                    placeholder="Ex: Masculino / Feminino / Outro"
                     maxLength="50"
                     required
                   />
@@ -269,6 +273,7 @@ class AuthorList extends Component {
                       name="nacionalidade"
                       value={this.state.nacionalidade || ""}
                       onChange={this.onChange.bind(this)}
+                      placeholder="Ex: Brasileira"
                       maxLength="100"
                       required
                     />
@@ -276,28 +281,20 @@ class AuthorList extends Component {
                 </div>
               </div>
             </div>
-
-            <br></br>
+            
             {!this.state.editDisabled ? (
-              <button
-                type="submit"
-                className="btn btn-success btn-block"
-              >
+              <button type="submit" className="btn btn-success btn-block">
                 Cadastrar
               </button>
             ) : (
-              <button
-                type="submit"
-                className="btn btn-primary btn-block"
-              >
+              <button type="submit" className="btn btn-primary btn-block">
                 Update
               </button>
             )}
-            
           </form>
-          <br></br>
-          <br></br>
         </div>
+
+
         <nav className="navbar navbar-dark jumbotron p-0">
           {this.state.editDisabled ? (
             <button
@@ -325,12 +322,14 @@ class AuthorList extends Component {
             </button>
           )}
         </nav>
-        <div className="container">
-          <table className="table bg-light Regular shadow mb-5">
-            <thead className="thead-dark">
+
+
+        <div className="container pb-5">
+          <table className="table bg-light shadow mb-5">
+            <thead className="thead-dark rounded-top">
               <tr>
                 <th>Nome</th>
-                <th>Data de nascimento</th>
+                <th>Nascimento</th>
                 <th>Sexo</th>
                 <th>Nacionalidade</th>
                 <th className="text-center">Opções</th>
@@ -350,17 +349,16 @@ class AuthorList extends Component {
                   <td className="text-center align-middle">
                     <div className="btn-group m-0 p-0">
                       <button
-                        href=""
-                        className="btn btn-primary"
+                        className="btn btn-info optionButtons"
                         disabled={this.state.editDisabled}
                         onClick={this.onShow.bind(this, Author)}
-                        data-toggle="modal" 
+                        data-toggle="modal"
                         data-target="#myModal"
                       >
-                        Exibir
+                        <i className="fas fa-eye"></i>
                       </button>
                       <button
-                        className="btn btn-info text-light"
+                        className="btn btn-primary optionButtons"
                         disabled={this.state.editDisabled}
                         onClick={this.onEdit.bind(this, Author.id)}
                         type="button"
@@ -370,15 +368,14 @@ class AuthorList extends Component {
                         aria-expanded="false"
                         aria-label="Toggle navigation"
                       >
-                        Editar
+                        <i className="fas fa-edit"></i>
                       </button>
                       <button
-                        href=""
-                        className="btn btn-danger"
+                        className="btn btn-danger optionButtons"
                         disabled={this.state.editDisabled}
                         onClick={this.onDelete.bind(this, Author.id)}
                       >
-                        Excluir
+                        <i className="fas fa-times"></i>
                       </button>
                     </div>
                   </td>
@@ -387,8 +384,6 @@ class AuthorList extends Component {
             </tbody>
           </table>
         </div>
-        <br></br>
-        <br></br>
       </div>
     );
   }

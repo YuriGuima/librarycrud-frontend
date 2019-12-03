@@ -1,5 +1,7 @@
 import React, { Component } from "react";
+import "./styles.css";
 import { ToastsContainer, ToastsStore } from "react-toasts";
+import ModalShow from "../../components/modal";
 import { getAuthorList, getGenreList, getPublisherList } from "../../routes";
 import { getBookList, addBook, updateBook, deleteBook } from "../../routes";
 
@@ -7,9 +9,9 @@ class BookList extends Component {
   constructor() {
     super();
     this.state = {
-      nameAuthor:"",
-      nameGenre:"",
-      namePublisher:"",
+      nameAuthor: "",
+      nameGenre: "",
+      namePublisher: "",
       id: "",
       idRegister: true,
       titulo: "",
@@ -28,32 +30,7 @@ class BookList extends Component {
     this.onChange = this.onChange.bind(this);
   }
 
-  authorShowParams(authorId) {
-    this.state.Authors.forEach(Author => {
-      if (Author.id === authorId) {
-        // eslint-disable-next-line react/no-direct-mutation-state
-        this.state.nameAuthor = Author.nome
-      }
-    })
-  }
-
-  genreShowParams(genreId) {
-    this.state.Genres.forEach(Genre => {
-      if (Genre.id === genreId) {
-        // eslint-disable-next-line react/no-direct-mutation-state
-        this.state.nameGenre = Genre.genero
-      }
-    })
-  }
-
-  publisherShowParams(publisherId) {
-    this.state.Publishers.forEach(Publisher => {
-      if (Publisher.id === publisherId) {
-        // eslint-disable-next-line react/no-direct-mutation-state
-        this.state.namePublisher = Publisher.nome
-      }
-    })
-  }
+  
 
   newMethod() {
     this.getAuthors();
@@ -72,72 +49,8 @@ class BookList extends Component {
     });
   };
 
-  getAll = () => {
-    getBookList().then(data => {
-      this.setState(
-        {
-          titulo: "",
-          dtlancamento: "",
-          author_id: "",
-          genre_id: "",
-          publisher_id: "",
-          Books: [...data]
-        },
-        () => {
-          console.log(this.state.Books);
-        }
-      );
-    });
-  };
 
-  getAuthors = () => {
-    getAuthorList().then(data => {
-      this.setState(
-        {
-          Authors: [...data]
-        },
-        () => {
-          console.log(this.state.Authors);
-        }
-      );
-    });
-  };
-
-  getGenres = () => {
-    getGenreList().then(data => {
-      this.setState(
-        {
-          Genres: [...data]
-        },
-        () => {
-          console.log(this.state.Genres);
-        }
-      );
-    });
-  };
-
-  getPublishers = () => {
-    getPublisherList().then(data => {
-      this.setState(
-        {
-          Publishers: [...data]
-        },
-        () => {
-          console.log(this.state.Publishers);
-        }
-      );
-    });
-  };
-
-  successAlert = msg => {
-    ToastsStore.success(msg);
-  };
-
-  errorAlert = msg => {
-    ToastsStore.error(msg);
-  };
-
-  onSubmit = e => {
+  onSubmit = e => {// Função para adicionar um registro na tabela
     e.preventDefault();
 
     addBook(
@@ -159,7 +72,8 @@ class BookList extends Component {
     });
   };
 
-  onUpdate = e => {
+
+  onUpdate = e => {// Atualiza um dado especifico da tabela
     e.preventDefault();
     updateBook(
       this.state.titulo,
@@ -179,7 +93,8 @@ class BookList extends Component {
     this.getAll();
   };
 
-  onShow = (Book, e) => {
+
+  onShow = (Book, e) => {// Exibe os dados do elemento especifico
     e.preventDefault();
     this.setState({
       titulo: Book.titulo,
@@ -190,7 +105,60 @@ class BookList extends Component {
     });
   };
 
-  onEdit = (Bookid, e) => {
+
+  onDelete = (val, e) => {// Exclui um dado da tabela
+    e.preventDefault();
+    deleteBook(val)
+    this.getAll();
+  };
+
+
+  getAll = () => {// Retorna todos os dados da Tabela
+    getBookList().then(data => {
+      this.setState(
+        {
+          titulo: "",
+          dtlancamento: "",
+          author_id: "",
+          genre_id: "",
+          publisher_id: "",
+          Books: [...data]
+        },
+        () => {
+          console.log(this.state.Books);
+        }
+      );
+    });
+  };
+
+
+  onToogleOpen() {// Abre o formulario
+    // eslint-disable-next-line no-undef
+    $(".collapse").collapse("show");
+  }
+
+  onToogleClose() {// Fecha o formulario
+    // eslint-disable-next-line no-undef
+    $(".collapse").collapse("hide");
+  }
+
+
+  onNew = e => {// Abre o formulario no modo de inserção
+    e.preventDefault();
+    this.onToogleOpen();
+    this.setState({
+      toogleOpen: true,
+      titulo: "",
+      dtlancamento: "",
+      author_id: "",
+      genre_id: "",
+      publisher_id: "",
+      editDisabled: false
+    });
+  };
+
+
+  onEdit = (Bookid, e) => {// Abre o formulario no modo de edição e exibe os dados atuais
     e.preventDefault();
     this.onToogleOpen();
 
@@ -211,7 +179,8 @@ class BookList extends Component {
     });
   };
 
-  onCancelEdit = e => {
+
+  onCancelEdit = e => {// Fecha o formulario de edição e limpa os campos
     e.preventDefault();
     this.setState({
       toogleOpen: true,
@@ -224,86 +193,121 @@ class BookList extends Component {
     });
   };
 
-  onDelete = (val, e) => {
-    e.preventDefault();
-    deleteBook(val);
-    this.getAll();
-  };
 
-  onNew = e => {
-    e.preventDefault();
-    this.onToogleOpen();
-    this.setState({
-      toogleOpen: true,
-      titulo: "",
-      dtlancamento: "",
-      author_id: "",
-      genre_id: "",
-      publisher_id: "",
-      editDisabled: false
+  getAuthors = () => {// Pega a lista de Autores
+    getAuthorList().then(data => {
+      this.setState(
+        {
+          Authors: [...data]
+        },
+        () => {
+          console.log(this.state.Authors);
+        }
+      );
     });
   };
 
-  onToogleOpen() {
-    // eslint-disable-next-line no-undef
-    $(".collapse").collapse("show");
+  getGenres = () => {// Pegar a lista de Gêneros Literários
+    getGenreList().then(data => {
+      this.setState(
+        {
+          Genres: [...data]
+        },
+        () => {
+          console.log(this.state.Genres);
+        }
+      );
+    });
+  };
+
+  getPublishers = () => {// Pega a lista de Editoras
+    getPublisherList().then(data => {
+      this.setState(
+        {
+          Publishers: [...data]
+        },
+        () => {
+          console.log(this.state.Publishers);
+        }
+      );
+    });
+  };
+
+
+  authorShowParams(authorId) {
+    this.state.Authors.forEach(Author => {
+      if (Author.id === authorId) {
+        // eslint-disable-next-line react/no-direct-mutation-state
+        this.state.nameAuthor = Author.nome;
+      }
+    });
   }
 
-  onToogleClose() {
-    // eslint-disable-next-line no-undef
-    $(".collapse").collapse("hide");
+  genreShowParams(genreId) {
+    this.state.Genres.forEach(Genre => {
+      if (Genre.id === genreId) {
+        // eslint-disable-next-line react/no-direct-mutation-state
+        this.state.nameGenre = Genre.genero;
+      }
+    });
+  }
+
+
+  publisherShowParams(publisherId) {
+    this.state.Publishers.forEach(Publisher => {
+      if (Publisher.id === publisherId) {
+        // eslint-disable-next-line react/no-direct-mutation-state
+        this.state.namePublisher = Publisher.nome;
+      }
+    });
+  }
+
+
+  successAlert = msg => {// Mensagem de sucesso
+    ToastsStore.success(msg);
+  };
+
+
+  modalContent() {// Estrutura da Model de exibição
+    return (
+      <div>
+        <div className="modal-header">
+          <h4>
+            {this.state.titulo} - {this.state.dtlancamento}
+          </h4>
+          <button type="button" className="close" data-dismiss="modal">
+            &times;
+          </button>
+        </div>
+        <div className="modal-body">
+          <ul>
+            {this.genreShowParams(this.state.genre_id)}
+            <li className="text-primary">Gênero: {this.state.nameGenre}</li>
+
+            {this.authorShowParams(this.state.author_id)}
+            <li className="text-primary">Autor(a): {this.state.nameAuthor}</li>
+
+            {this.publisherShowParams(this.state.publisher_id)}
+            <li className="text-primary">
+              Editora: {this.state.namePublisher}
+            </li>
+          </ul>
+        </div>
+      </div>
+    );
   }
 
   render() {
     return (
       <div className=".container-fluid">
-        <div className="container">
-          <div className="modal fade" id="myModal" role="dialog">
-            <div className="modal-dialog">
-              <div className="modal-content">
-                <div className="modal-header">
-                  <h4>
-                    {this.state.titulo} - {this.state.dtlancamento}
-                  </h4>
-                  <button type="button" className="close" data-dismiss="modal">
-                    &times;
-                  </button>
-                </div>
-                <div className="modal-body">
-                  <ul>
-                    {this.genreShowParams(this.state.genre_id)}
-                    <li className="text-primary">Gênero: {this.state.nameGenre}</li>
-
-                    {this.authorShowParams(this.state.author_id)}
-                    <li className="text-primary">Autor(a): {this.state.nameAuthor}</li>
-
-                    {this.publisherShowParams(this.state.publisher_id)}
-                    <li className="text-primary">Editora: {this.state.namePublisher}</li>
-                  </ul>
-                </div>
-                <div className="modal-footer">
-                  <button
-                    type="button"
-                    className="btn btn-default"
-                    data-dismiss="modal"
-                  >
-                    Close
-                  </button>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-
+        <ModalShow content={this.modalContent()} />
         <ToastsContainer store={ToastsStore} />
         <div className="collapse container" id="navbarToggleExternalContent">
           <form
             onSubmit={!this.state.editDisabled ? this.onSubmit : this.onUpdate}
-            className="needs-validation"
+            className="needs-validation mt-5 mb-5"
           >
-            <br></br>
-            <br></br>
-            <div className="form-group">
+            <div className="form-group mb-5">
               <div className="row">
                 <div className="col-md-9">
                   <h4 htmlFor="titulo">Título:</h4>
@@ -338,14 +342,21 @@ class BookList extends Component {
               <br></br>
               <div className="row">
                 <div className="col-md-4">
-                  <h4 htmlFor="author_id">Autor:</h4>
-                  <select required
+                  <a href="/author" className="text-dark text-decoration-none">
+                    <span className="btn btn-success btn-sm mr-2 mb-1">
+                      <i className="fa fa-plus"></i>
+                    </span>
+                    <span className="h4" htmlFor="author_id">
+                      Autor:
+                    </span>
+                  </a>
+                  <select
+                    required
                     className="form-control"
                     id="author_id"
                     name="author_id"
                     value={this.state.author_id || ""}
                     onChange={this.onChange.bind(this)}
-                    
                   >
                     <option value="">Autor</option>
                     {this.state.Authors.map((Author, index) => (
@@ -359,14 +370,21 @@ class BookList extends Component {
                 </div>
 
                 <div className="col-md-4">
-                  <h4 htmlFor="genre_id">Gênero Literário:</h4>
-                  <select required
+                  <a href="/genre" className="text-dark text-decoration-none">
+                    <span className="btn btn-success btn-sm mr-2 mb-1">
+                      <i className="fa fa-plus"></i>
+                    </span>
+                    <span className="h4" htmlFor="author_id">
+                      Gênero Literário:
+                    </span>
+                  </a>
+                  <select
+                    required
                     className="form-control"
                     id="genre_id"
                     name="genre_id"
                     value={this.state.genre_id || ""}
                     onChange={this.onChange.bind(this)}
-                    
                   >
                     <option value="">Gênero</option>
                     {this.state.Genres.map((Genre, index) => (
@@ -380,14 +398,24 @@ class BookList extends Component {
                 </div>
 
                 <div className="col-md-4">
-                  <h4 htmlFor="publisher_id">Editora:</h4>
-                  <select required
+                  <a
+                    href="/publisher"
+                    className="text-dark text-decoration-none"
+                  >
+                    <span className="btn btn-success btn-sm mr-2 mb-1">
+                      <i className="fa fa-plus"></i>
+                    </span>
+                    <span className="h4" htmlFor="author_id">
+                      Editora:
+                    </span>
+                  </a>
+                  <select
+                    required
                     className="form-control"
                     id="publisher_id"
                     name="publisher_id"
                     value={this.state.publisher_id || ""}
                     onChange={this.onChange.bind(this)}
-                    
                   >
                     <option value="">Editora</option>
                     {this.state.Publishers.map((Publisher, index) => (
@@ -443,15 +471,15 @@ class BookList extends Component {
             </button>
           )}
         </nav>
-        <div className="container">
+        <div className="container pb-5">
           <table className="table bg-light Regular shadow mb-5">
             <thead className="thead-dark">
               <tr>
                 <th className="text-left">Título</th>
-                <th className="text-left">Data de Lançamento</th>
-                <th className="text-left">Autor</th>
-                <th className="text-left">Gênero</th>
-                <th className="text-left">Editora</th>
+                <th className="text-left">Lançamento</th>
+                <th className="text-center">Autor</th>
+                <th className="text-center">Gênero</th>
+                <th className="text-center">Editora</th>
                 <th className="text-center">Opções</th>
               </tr>
             </thead>
@@ -459,32 +487,36 @@ class BookList extends Component {
               {this.state.Books.map((Book, index) => (
                 <tr key={index}>
                   <td className="text-left align-middle">{Book.titulo}</td>
-                  
+
                   <td className="text-left align-middle">
                     {Book.dtlancamento}
                   </td>
 
-                  <td className="text-left align-middle">{Book.author_id}</td>
+                  <td className="text-center align-middle">
+                    Id: {Book.author_id}
+                  </td>
 
-                  <td className="text-left align-middle">{Book.genre_id}</td>
-                  <td className="text-left align-middle">
-                    {Book.publisher_id}
+                  <td className="text-center align-middle">
+                    Cod: {Book.genre_id}
+                  </td>
+                  <td className="text-center align-middle">
+                    Cod: {Book.publisher_id}
                   </td>
 
                   <td className="text-center align-middle">
                     <div className="btn-group m-0 p-0">
                       <button
                         href=""
-                        className="btn btn-primary"
+                        className="btn btn-info optionButtons"
                         disabled={this.state.editDisabled}
                         onClick={this.onShow.bind(this, Book)}
                         data-toggle="modal"
                         data-target="#myModal"
                       >
-                        Exibir
+                        <i className="fas fa-eye"></i>
                       </button>
                       <button
-                        className="btn btn-info text-light"
+                        className="btn btn-primary optionButtons"
                         disabled={this.state.editDisabled}
                         onClick={this.onEdit.bind(this, Book.id)}
                         type="button"
@@ -494,15 +526,15 @@ class BookList extends Component {
                         aria-expanded="false"
                         aria-label="Toggle navigation"
                       >
-                        Editar
+                        <i className="fas fa-edit"></i>
                       </button>
                       <button
                         href=""
-                        className="btn btn-danger"
+                        className="btn btn-danger optionButtons"
                         disabled={this.state.editDisabled}
                         onClick={this.onDelete.bind(this, Book.id)}
                       >
-                        Excluir
+                        <i className="fas fa-times"></i>
                       </button>
                     </div>
                   </td>
@@ -511,8 +543,6 @@ class BookList extends Component {
             </tbody>
           </table>
         </div>
-        <br></br>
-        <br></br>
       </div>
     );
   }

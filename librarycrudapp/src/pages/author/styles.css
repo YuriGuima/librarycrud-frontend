@@ -1,0 +1,17 @@
+.contentModal{
+    width: 25em; 
+    overflow: auto;
+    padding: 0.6em 0em;
+}
+
+td {
+    max-width: 225px;
+    white-space: nowrap;
+    width: 10em;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.optionButtons{
+    width: 2.7em;
+}
